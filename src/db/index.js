@@ -48,5 +48,17 @@ export default {
   delete(id) {
     const todo = AV.Object.createWithoutData('TodoListPro', id)
     return todo.destroy()
+  },
+
+  async update(id, data) {
+    const todo = AV.Object.createWithoutData('TodoListPro', id)
+    delete data.objectId
+    delete data.updatedAt
+    delete data.createdAt
+    Object.keys(data).forEach(key => {
+      todo.set(key, data[key])
+    })
+    // 保存到云端
+    return todo.save()
   }
 }

@@ -98,7 +98,7 @@
             label="任务优先级"
             size="mini"
           />
-          <span class="color-notice" v-show="!edit">选中的日期范围中已存在{{ form.level - 1 }}条任务</span>
+          <span class="color-notice">暂不支持修改</span>
         </el-form-item>
         <el-form-item label="任务详情">
           <el-input placeholder="任务过程记录，问题，描述等" :rows="5" type="textarea" v-model="form.detail"/>
@@ -282,8 +282,9 @@ export default {
   },
 
   mounted() {
-    const { offsetHeight } = document.body
-    this.planDialogTop = `${(offsetHeight - 640) / 2}px`
+    // document.documentElement.clientHeight
+    const { clientHeight } = document.documentElement
+    this.planDialogTop = `${(clientHeight - 640) / 2}px`
   },
 
   methods: {
@@ -327,10 +328,19 @@ export default {
     async submitForm() {
       this.$loading.open()
       if (this.edit) {
-        const res = await Object.assign(this.edit.self, this.form, {
+        let res
+        const req = {
+          ...this.form,
           start: this.form.start.valueOf(),
           end: this.form.end.valueOf()
-        }).save()
+        }
+        if (this.edit.self) {
+          // 走module编辑
+          res = await Object.assign(this.edit.self, req).save()
+        } else {
+          // 走最原始的编辑
+          res = await db.update(this.edit.objectId, req)
+        }
         this.$refs.calendar.updatePlan(res)
         this.dialogVisible = false
         this.$message.success('编辑成功')
@@ -358,9 +368,10 @@ export default {
     del() {
       this.$confirm('确认删除吗？').then(() => {
         this.$loading.open()
-        db.delete(this.edit.objectId).then(() => {
+        const id = this.edit.objectId
+        db.delete(id).then(() => {
           this.$message.success('删除成功')
-          this.$refs.calendar.delPlan(this.edit.objectId)
+          this.$refs.calendar.delPlan(id)
           this.dialogVisible = false
           this.$loading.close()
         })

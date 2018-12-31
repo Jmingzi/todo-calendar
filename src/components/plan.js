@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import db from '../db'
+import Todo from '../db/module';
 
 export default {
   data() {
@@ -22,11 +23,16 @@ export default {
   },
 
   methods: {
+    /**
+     * 获取任务列表
+     * @returns {Promise<never>}
+     */
     async dealOriginPlan() {
       if (!db.user) {
         return Promise.reject('未登录')
       }
       this.$loading.open()
+      this.datePlanCache = {}
       const res = await this.getPlan(this.dateList[0], this.dateList[this.dateList.length - 1]).catch(err => {
         if (err.code) {
           console.log('未登录')
@@ -38,9 +44,15 @@ export default {
       }
     },
 
+    /**
+     * 转换原始任务数据为可用
+     * @param data
+     * @returns {{}}
+     */
     transferPlanItem(data) {
       const item = data.toJSON ? data.toJSON() : { ...data }
-      item.self = data
+      // 保存原型引用
+      item.self = data.toJSON ? data : undefined
       item.start = dayjs(item.start)
       item.end = dayjs(item.end)
       // 将日期字符存入数组
@@ -53,25 +65,39 @@ export default {
       return item
     },
 
+    /**
+     * 获取当天的任务并缓存
+     * @param date
+     * @returns {*}
+     */
     getDatePlan(date) {
       const tmp = date.format('YYYY/MM/DD')
       if (!this.datePlanCache[tmp]) {
         const result = this.plan.map(x => {
-          // console.log(x.dateList.some(y => y === tmp), tmp)
           if (x.dateList.some(y => y === tmp)) {
             return x
           }
         }).filter(x => x)
-        this.datePlanCache[tmp] = result.length && result
+        // this.datePlanCache[tmp] = result.length && result
+        return result.length && result
       }
-      return this.datePlanCache[tmp]
+      return []
+      // return this.datePlanCache[tmp]
     },
 
+    /**
+     * 是否是任务的头部和尾部
+     * @param plan
+     * @param date
+     * @param type
+     * @returns {*}
+     */
     isPlanHeadTail(plan, date, type) {
       const isHead = type === 'head'
       const tmp = date.format('YYYY/MM/DD')
-      const item = this.datePlanCache[tmp]
-      if (item) {
+      // const item = this.datePlanCache[tmp]
+      const item = this.getDatePlan(date)
+      if (item && item.length) {
         const pl = item.find(x => x.objectId === plan.objectId)
         return pl && pl.dateList && pl.dateList[isHead ? 0 : pl.dateList.length - 1] === tmp
       }
@@ -87,8 +113,8 @@ export default {
      */
     showPlan(plan, date) {
       // 计划的最后一天小于今天
-      const last = plan.dateList[plan.dateList.length - 1]
-      const hasExpire = dayjs(last).valueOf() < this.now.valueOf()
+      // const last = plan.dateList[plan.dateList.length - 1]
+      // const hasExpire = dayjs(last).valueOf() < this.now.valueOf()
       return this.isSelected(date) ||
         // hasExpire ||
         this.isPlanHeadTail(plan, date, 'head')
@@ -98,29 +124,47 @@ export default {
       this.$emit('edit-plan', plan)
     },
 
+    /**
+     * 创建任务时，计算得到可用level
+     * @param dateRange
+     * @param editItem
+     * @returns {number}
+     */
     getLevel(dateRange, editItem) {
       let level = 1
       let start = dayjs(dateRange[0])
       const end = dayjs(dateRange[1])
-      let i = 0
-      while (start.valueOf() <= end.valueOf() && i < 5) {
+      while (start.valueOf() <= end.valueOf()) {
         const plan = this.getDatePlan(start)
-        if (plan) {
+        if (plan && plan.length) {
           // 在plan中需要将编辑的这一条剔除
           if (editItem) {
             const i = plan.findIndex(x => x.objectId === editItem.objectId)
             plan.splice(i, 1)
           }
-          level = level < plan.length + 1 ? (plan.length + 1) : level
+          if (plan.length) {
+            // 1~9
+            const planLevelList = plan.map(x => x.level)
+            const remainLevel = []
+            for (let j = 1; j < 10; j++) {
+              if (planLevelList.every(x => x !== j)) {
+                remainLevel.push(j)
+              }
+            }
+            // 取最小值
+            const min = Math.min.apply(null, remainLevel)
+            level = level < min ? min : level
+          }
         }
-        start.add(1, 'day')
-        i++
+        start = start.add(1, 'day')
       }
       return level
     },
 
+    // 添加任务成功后，更新列表
+    // 因为编辑时用的module方式
+    // 添加的任务不存在prototype引用
     pushPlan(data) {
-      // 更新缓存
       this.datePlanCache = {}
       this.plan.push(this.transferPlanItem(data))
     },
@@ -128,14 +172,22 @@ export default {
     delPlan(id) {
       const i = this.plan.findIndex(x => x.objectId === id)
       this.datePlanCache = {}
-      this.plan.splice(i, 1)
+      if (i > -1) {
+        this.plan.splice(i, 1)
+      } else {
+        this.$message.error('删除本地plan失败')
+      }
     },
 
     updatePlan(data) {
       this.datePlanCache = {}
       const trans = this.transferPlanItem(data)
       const i = this.plan.findIndex(x => x.objectId === trans.objectId)
-      this.plan.splice(i, 1, trans)
+      if (i > -1) {
+        this.plan.splice(i, 1, trans)
+      } else {
+        this.$message.error('更新本地任务失败')
+      }
     }
   }
 }
