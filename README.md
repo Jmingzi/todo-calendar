@@ -1,29 +1,6 @@
-# h
+# Miss清单Pro日历版
 
-## Project setup
-```
-npm install
-```
+通过任务的时间线来展示本月所属的任务列表，demo图如下：
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+<img src="../docs/intro.jpg" width=100%>
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
