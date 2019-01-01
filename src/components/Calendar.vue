@@ -150,7 +150,6 @@ export default {
 
     calendarItemHeight() {
       return this.totalLine
-        // ? ((this.$parent.docHeight - 81) / this.totalLine).toFixed(2)
         ? Math.floor((this.$parent.docHeight - 81) / this.totalLine)
         : 0
     }

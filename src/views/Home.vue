@@ -284,7 +284,6 @@ export default {
 
   mounted() {
     const { clientHeight } = document.documentElement
-    // console.log('clientHeight', clientHeight)
     this.docHeight = clientHeight
     this.planDialogTop = `${(clientHeight - 640) / 2}px`
   },
@@ -393,6 +392,8 @@ export default {
       this.$loading.close()
       this.loginUser = db.user
       this.loginVisible = false
+      // 拉数据
+      this.$refs.calendar.dealOriginPlan()
     },
 
     commonSubmitForm(formName) {
