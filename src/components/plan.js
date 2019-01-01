@@ -20,7 +20,7 @@ export default {
     // 展示的任务条数
     planTotalLine() {
       return this.calendarItemHeight
-        ? Math.floor((this.calendarItemHeight - 28) / 23)
+        ? ((this.calendarItemHeight - 28) / 23).toFixed(2)
         : 0
     }
   },
