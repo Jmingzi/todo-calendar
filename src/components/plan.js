@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import db from '../db'
-import Todo from '../db/module';
+// import Todo from '../db/module';
 
 export default {
   data() {
@@ -17,6 +17,12 @@ export default {
   },
 
   computed: {
+    // 展示的任务条数
+    planTotalLine() {
+      return this.calendarItemHeight
+        ? Math.floor((this.calendarItemHeight - 28) / 23)
+        : 0
+    }
   },
 
   created() {

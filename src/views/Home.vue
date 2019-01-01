@@ -106,8 +106,8 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button @click="resetForm('planForm')">重 置</el-button>
         <el-button v-if="edit" type="danger" @click="del">删 除</el-button>
+        <el-button v-else @click="resetForm('planForm')">重 置</el-button>
         <el-button type="primary" @click="commonSubmitForm('planForm')">确 定</el-button>
       </span>
     </el-dialog>
@@ -243,7 +243,8 @@ export default {
         ]
       },
 
-      enterKeyInputElem : null
+      enterKeyInputElem : null,
+      docHeight: 0
     }
   },
 
@@ -282,8 +283,9 @@ export default {
   },
 
   mounted() {
-    // document.documentElement.clientHeight
     const { clientHeight } = document.documentElement
+    // console.log('clientHeight', clientHeight)
+    this.docHeight = clientHeight
     this.planDialogTop = `${(clientHeight - 640) / 2}px`
   },
 

@@ -37,6 +37,9 @@
             'calendar__item--selected-before': isSelectedBefore(item),
             'calendar__item--current': isCurrentDay(item)
           }"
+          :style="{
+            'height': `${calendarItemHeight}px`
+          }"
           @click="selectDate(item)"
         >
           <div class="calendar__item--word-title">
@@ -71,7 +74,7 @@
           <div class="calendar__plan">
             <div
               v-for="planItem in getDatePlan(item)"
-              v-if="planItem.level <= 3"
+              v-if="planItem.level <= planTotalLine"
               :key="planItem.objectId"
               class="calendar__plan--item"
               :class="{
@@ -143,6 +146,10 @@ export default {
         return null
       }
       return this.selectedDate.subtract(1, 'day')
+    },
+
+    calendarItemHeight() {
+      return this.totalLine ? Math.floor((this.$parent.docHeight - 80) / this.totalLine) : 0
     }
   },
 
@@ -359,7 +366,7 @@ export default {
     &__plan
       position absolute
       top 30px
-      height 66px
+      // height 66px
       width 100%
       font-size 12px
       &--item
@@ -382,7 +389,19 @@ export default {
         &-level2
           top 23px
         &-level3
-          top 46px
+          top 23 * 2px
+        &-level4
+          top 23 * 3px
+        &-level5
+          top 23 * 4px
+        &-level6
+          top 23 * 5px
+        &-level7
+          top 23 * 6px
+        &-level8
+          top 23 * 7px
+        &-level9
+          top 23 * 8px
         &-start
           left 3px
         &-end
