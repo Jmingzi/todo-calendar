@@ -28,6 +28,10 @@
           }
         }
       })
+      // 申请权限
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission()
+      }
     </script>
   </head>
   <body>
