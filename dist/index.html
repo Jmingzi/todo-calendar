@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><link rel=icon href=/favicon.ico><title>Miss清单Pro</title><script>function getDate(ts) {
+        var obj = ts ? new Date(ts) : new Date()
+        var y = obj.getFullYear()
+        var m = obj.getMonth() + 1
+        var d = obj.getDate()
+        return y + '/' + m + '/' + d
+      }
+      var hiddenTimeStamp
+      document.addEventListener('visibilitychange', function (e) {
+        if(document.visibilityState === 'hidden') {
+          hiddenTimeStamp = Date.now()
+        } else {
+          var old = getDate(hiddenTimeStamp)
+          var now = getDate()
+          console.log(now, old)
+          if (now !== old) {
+            // 重新加载页面
+            location.reload()
+          }
+        }
+      })
+      // 申请权限
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission()
+      }</script><link href=/css/app.e568944c.css rel=preload as=style><link href=/css/chunk-vendors.62ac65b2.css rel=preload as=style><link href=/js/app.64724773.js rel=preload as=script><link href=/js/chunk-vendors.6c8c5976.js rel=preload as=script><link href=/css/chunk-vendors.62ac65b2.css rel=stylesheet><link href=/css/app.e568944c.css rel=stylesheet></head><body><noscript><strong>We're sorry but h doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app></div><script src=/js/chunk-vendors.6c8c5976.js></script><script src=/js/app.64724773.js></script></body></html>
