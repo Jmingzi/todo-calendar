@@ -6,7 +6,29 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>Miss清单Pro</title>
-    <!--<link rel="icon" href="https://iming.work/favicon.ico" type="image/x-icon" />-->
+    <script>
+      function getDate(ts) {
+        var obj = ts ? new Date(ts) : new Date()
+        var y = obj.getFullYear()
+        var m = obj.getMonth() + 1
+        var d = obj.getDate()
+        return y + '/' + m + '/' + d
+      }
+      var hiddenTimeStamp
+      document.addEventListener('visibilitychange', function (e) {
+        if(document.visibilityState === 'hidden') {
+          hiddenTimeStamp = Date.now()
+        } else {
+          var old = getDate(hiddenTimeStamp)
+          var now = getDate()
+          console.log(now, old)
+          if (now !== old) {
+            // 重新加载页面
+            location.reload()
+          }
+        }
+      })
+    </script>
   </head>
   <body>
     <noscript>
