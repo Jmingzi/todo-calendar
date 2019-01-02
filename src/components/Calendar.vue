@@ -88,8 +88,25 @@
               @click="clickPlan(planItem)"
             >
               <template v-if="showPlan(planItem, item)">
-                <span class="calendar__plan--item-tag">{{ planItem.startTime }}</span>
-                <span>{{ planItem.name }}</span>
+                <span
+                  v-if="isWholeDay(planItem, item)"
+                  key="time"
+                  class="calendar__plan--item-tag">
+                  整天
+                </span>
+                <span
+                  v-else-if="isPlanHeadTail(planItem, item, 'head')"
+                  key="time"
+                  class="calendar__plan--item-tag">
+                  {{ planItem.startTime }}
+                </span>
+                <span
+                  v-else-if="isPlanHeadTail(planItem, item, 'tail')"
+                  key="time"
+                  class="calendar__plan--item-tag">
+                  {{ planItem.endTime }}
+                </span>
+                <span class="calendar__plan--item-content">{{ planItem.name }}</span>
               </template>
             </div>
           </div>
@@ -385,7 +402,10 @@ export default {
         cursor pointer
         &-tag
           color #488ff9
-          margin 0 3px
+          // margin 0 3px
+          margin-left 3px
+        &-content
+          margin-left 3px
         &-level1
           top 0
         &-level2

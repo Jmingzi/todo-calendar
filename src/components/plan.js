@@ -110,6 +110,10 @@ export default {
       return false
     },
 
+    isWholeDay(plan) {
+      return plan.start.valueOf() === plan.end.valueOf() && plan.startTime === '上午' && plan.endTime === '下午'
+    },
+
     /**
      * 是否显示任务
      * 任务第一条 及 选中

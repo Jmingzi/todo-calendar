@@ -205,7 +205,7 @@ export default {
         start: '',
         startTime: defaultTime[0].value,
         end: '',
-        endTime: defaultTime[0].value,
+        endTime: defaultTime[1].value,
         color: colorList[Math.floor(Math.random()*7)],
         detail: '',
         level: 1
