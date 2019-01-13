@@ -1,22 +1,26 @@
-<!DOCTYPE html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><link rel=icon href=/favicon.ico><title>Miss清单Pro</title><script>function getDate(ts) {
+<!DOCTYPE html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><link rel=icon href=/favicon.ico><title>Miss清单Pro</title><script>function getDate (ts) {
         var obj = ts ? new Date(ts) : new Date()
         var y = obj.getFullYear()
         var m = obj.getMonth() + 1
         var d = obj.getDate()
         return y + '/' + m + '/' + d
       }
+      function getScreen () {
+        return screen.width + screen.height
+      }
       var hiddenTimeStamp
-      document.addEventListener('visibilitychange', function (e) {
+      var screenSize
+      document.addEventListener('visibilitychange', function () {
         if(document.visibilityState === 'hidden') {
           hiddenTimeStamp = Date.now()
-        } else {
-          var old = getDate(hiddenTimeStamp)
-          var now = getDate()
-          console.log(now, old)
-          if (now !== old) {
-            // 重新加载页面
-            location.reload()
-          }
+          screenSize = getScreen()
+        } else if (
+          getDate() !== getDate(hiddenTimeStamp) ||
+          getScreen() !== screenSize
+        ) {
+          // 日期变化
+          // 窗口尺寸变化
+          location.reload()
         }
       })
       // 申请权限
