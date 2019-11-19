@@ -35,7 +35,8 @@
           :class="{
             'calendar__item--selected': isSelected(item),
             'calendar__item--selected-before': isSelectedBefore(item),
-            'calendar__item--current': isCurrentDay(item)
+            'calendar__item--current': isCurrentDay(item),
+            'calendar__item--notMonth': isNotCurrentMonth(item)
           }"
           :style="{
             'height': `${calendarItemHeight}px`
@@ -247,6 +248,10 @@ export default {
       }
     },
 
+    isNotCurrentMonth (item) {
+      return this.currentMonth.format('MM') !== item.format('MM')
+    },
+
     isSelected(item) {
       return this.selectedDate.format('YYYY/MM/DD') === item.format('YYYY/MM/DD')
     },
@@ -316,6 +321,10 @@ export default {
     &__group
       display flex
       justify-content space-between
+      &--title
+        position relative
+        box-shadow 0 1px 2px rgba(0, 0, 0, 0.15)
+        z-index 1
     &__item
       position relative
       width 400px
@@ -340,7 +349,11 @@ export default {
         justify-content center
         align-items center
         height 30px
-        background-color #f9f9f9
+      &--notMonth
+        background-color #fcfcfc
+        & ^[1]--word
+          font-weight normal
+          color #999
       &--word
         width 20px
         height 20px
@@ -348,8 +361,8 @@ export default {
         justify-content center
         align-items center
         border-radius 50%
-        // margin 3px 0 0 3px
-        color #666
+        color #333
+        font-weight bold
         &-title
           display flex
           justify-content space-between
