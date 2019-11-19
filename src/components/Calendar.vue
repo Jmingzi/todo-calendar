@@ -14,7 +14,7 @@
       <slot name="right"></slot>
     </div>
     <div class="calendar__date">
-      <div class="calendar__group">
+      <div class="calendar__group calendar__group--title">
         <div
           v-for="(item, i) in week"
           :key="`week${i}`"
