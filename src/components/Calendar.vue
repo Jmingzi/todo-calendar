@@ -193,31 +193,30 @@ export default {
     },
 
     computedDate() {
-      const start = this.currentMonth.startOf('month')
+      let start = this.currentMonth.startOf('month')
       const end = this.currentMonth.endOf('month')
-      let indexDate = start
       let base = 0
       let index = 0
       let startIndex
       let endIndex
-      while (indexDate.valueOf() < end.valueOf()) {
-        let tmpDay = indexDate.day()
+      while (start.valueOf() < end.valueOf()) {
+        let tmpDay = start.day()
         // 周日为7
         tmpDay = tmpDay === 0 ? 7 : tmpDay
         // 获取数组索引
         index = tmpDay - 1 + base * 7
-        if (tmpDay % 7 === 0) {
-          base += 1
-        }
         if (base === 0) {
           startIndex = index
         } else {
           // 只展示base + 1行数据
           endIndex = index
         }
+        if (tmpDay % 7 === 0) {
+          base += 1
+        }
         // 填充本月数组
-        this.dateList[index] = indexDate
-        indexDate = indexDate.add(1, 'day')
+        this.dateList[index] = start
+        start = start.add(1, 'day')
       }
       this.totalLine = base + 1
       // 补充当月首位,末尾
